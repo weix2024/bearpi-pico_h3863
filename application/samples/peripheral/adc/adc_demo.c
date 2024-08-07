@@ -31,19 +31,16 @@ static void *adc_task(const char *arg)
 {
     UNUSED(arg);
     osal_printk("start adc sample test");
-    uapi_adc_init(ADC_CLOCK_NONE);
-    uapi_adc_power_en(AFE_GADC_MODE, true);
+    uapi_adc_init(ADC_CLOCK_500KHZ);
+    uapi_adc_power_en(AFE_SCAN_MODE_MAX_NUM, true);
     adc_scan_config_t config = {
         .type = 0,
-        .threshold_l = 0.5,
-        .threshold_h = 3.3,
-        .freq = 0,
+        .freq = 1,
     };
     
     while (1)
     {
         uapi_adc_auto_scan_ch_enable(ADC_CHANNEL_0, config, test_adc_callback);
-        osal_msleep(100);
         uapi_adc_auto_scan_ch_disable(ADC_CHANNEL_0);
         osal_msleep(2000);
     }
