@@ -25,7 +25,6 @@ pktbin = "../../../../../output/ws63/pktbin"
 inter_bin = "../../../../../interim_binary/ws63/bin/boot_bin"
 efuse_csv = "../script/efuse.csv"
 boot_bin = "../../../../../output/ws63/acore/boot_bin"
-mfg_bin = "../../../../../application/ws63/ws63_liteos_mfg"
 
 def merge(file_first, file_second, file_out):
     if "windows" in platform.platform().lower():
@@ -126,9 +125,6 @@ if os.path.isfile("params.bin"):
 
 if not os.path.isdir(boot_bin):
     shutil.copytree(inter_bin, boot_bin)
-
-if not os.path.isfile(os.path.join(boot_bin, "ws63-liteos-mfg.bin")):
-    shutil.copy(os.path.join(mfg_bin, "ws63-liteos-mfg.bin"), boot_bin)
 
 #sign ssb
 if os.path.isfile(os.path.join(out_put, "ws63-ssb/ssb.bin")):
@@ -257,7 +253,7 @@ sign_app(os.path.join(out_put, "ws63-liteos-bgle-all-asic/ws63-liteos-bgle-all-a
 
 sign_app(os.path.join(out_put, "ws63-liteos-testsuite-radar/ws63-liteos-testsuite-radar.bin"), "0", "liteos_testsuite_radar_bin_ecc.cfg")
 
-sign_app(os.path.join(boot_bin, "ws63-liteos-mfg.bin"), "0", "liteos_mfg_bin_factory_ecc.cfg")
+sign_app(os.path.join(out_put, "../../../", "application", "ws63", "ws63_liteos_mfg", "ws63-liteos-mfg.bin"), "0", "liteos_mfg_bin_factory_ecc.cfg")
 
 move_file(cwd_path, os.path.join(out_put, "param_bin"), "params.bin")
 # clean middle files
