@@ -14,9 +14,6 @@
 #include "sle_device_discovery.h"
 #include "sle_uart_server_adv.h"
 #include "sle_uart_server.h"
-#ifdef CONFIG_SAMPLE_SUPPORT_LOW_LATENCY_TYPE
-#include "sle_low_latency.h"
-#endif
 #define OCTET_BIT_LEN           8
 #define UUID_LEN_2              2
 #define UUID_INDEX              14
@@ -303,21 +300,6 @@ errcode_t sle_uart_server_send_report_by_handle(const uint8_t *data, uint16_t le
     return ssaps_notify_indicate(g_server_id, g_sle_conn_hdl, &param);
 }
 
-void sle_uart_server_sample_set_mcs(uint16_t conn_id)
-{
-#ifdef CONFIG_SAMPLE_SUPPORT_PERFORMANCE_TYPE
-    if (sle_set_mcs(conn_id, 10) != 0) { // mcs10
-        osal_printk("%s sle_set_mcs fail\r\n", SLE_UART_SERVER_LOG);
-        return;
-    }
-    osal_printk("%s sle_set_mcs success\r\n", SLE_UART_SERVER_LOG);
-#else
-    unused(conn_id);
-    // 非跑流sample使用原mcs参数
-#endif
-    return;
-}
-
 static void sle_connect_state_changed_cbk(uint16_t conn_id, const sle_addr_t *addr,
     sle_acb_state_t conn_state, sle_pair_state_t pair_state, sle_disc_reason_t disc_reason)
 {
@@ -328,10 +310,6 @@ static void sle_connect_state_changed_cbk(uint16_t conn_id, const sle_addr_t *ad
         addr->addr[BT_INDEX_0], addr->addr[BT_INDEX_4]);
     if (conn_state == SLE_ACB_STATE_CONNECTED) {
         g_sle_conn_hdl = conn_id;
-#ifdef CONFIG_SAMPLE_SUPPORT_LOW_LATENCY_TYPE
-        sle_low_latency_tx_enable();
-        osal_printk("%s sle_low_latency_tx_enable \r\n", SLE_UART_SERVER_LOG);
-#endif
     } else if (conn_state == SLE_ACB_STATE_DISCONNECTED) {
         g_sle_conn_hdl = 0;
         g_sle_pair_hdl = 0;

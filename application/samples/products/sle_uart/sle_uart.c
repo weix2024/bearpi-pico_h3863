@@ -78,11 +78,7 @@ static void uart_init_config(void)
 #define SLE_UART_SERVER_MSG_QUEUE_MAX_SIZE  32
 #define SLE_UART_SERVER_QUEUE_DELAY         0xFFFFFFFF
 #define SLE_UART_SERVER_BUFF_MAX_SIZE       800
-#ifdef CONFIG_SAMPLE_SUPPORT_PERFORMANCE_TYPE
-#define SLE_UART_SERVER_SEND_BUFF_MAX_LEN   250
-#else
-#define SLE_UART_SERVER_SEND_BUFF_MAX_LEN   40
-#endif
+
 unsigned long g_sle_uart_server_msgqueue_id;
 #define SLE_UART_SERVER_LOG                 "[sle uart server]"
 static void ssaps_server_read_request_cbk(uint8_t server_id, uint16_t conn_id, ssaps_req_read_cb_t *read_cb_para,
@@ -102,58 +98,16 @@ static void ssaps_server_write_request_cbk(uint8_t server_id, uint16_t conn_id, 
     }
 }
 
-#ifdef CONFIG_SAMPLE_SUPPORT_LOW_LATENCY_TYPE
-uint8_t g_buff[SLE_UART_SERVER_BUFF_MAX_SIZE] = {0};
-uint16_t g_uart_buff_len = 0;
-uint8_t g_buff_data_valid = 0;
-uint8_t g_mcs_flag = 0;
-#endif
 static void sle_uart_server_read_int_handler(const void *buffer, uint16_t length, bool error)
 {
     unused(error);
     if (sle_uart_client_is_connected()) {
-#ifdef CONFIG_SAMPLE_SUPPORT_LOW_LATENCY_TYPE
-    g_buff_data_valid = 1;
-    g_uart_buff_len = 0;
-    (void)memcpy_s(g_buff, SLE_UART_SERVER_SEND_BUFF_MAX_LEN, buffer, length);
-    g_uart_buff_len = length;
-#else
     sle_uart_server_send_report_by_handle(buffer, length);
-#endif
     } else {
         osal_printk("%s sle client is not connected! \r\n", SLE_UART_SERVER_LOG);
     }
 }
 
-#ifdef CONFIG_SAMPLE_SUPPORT_LOW_LATENCY_TYPE
-uint8_t *sle_uart_low_latency_tx_cbk(uint16_t *len)
-{
-#ifdef CONFIG_SAMPLE_SUPPORT_PERFORMANCE_TYPE
-    if (g_mcs_flag == 0) {
-        sle_uart_server_sample_set_mcs(get_connect_id());
-    }
-    g_uart_buff_len = SLE_UART_SERVER_SEND_BUFF_MAX_LEN;
-    g_buff_data_valid = 1;
-    g_mcs_flag = 1;
-#endif
-    if (g_buff_data_valid == 0) {
-        return NULL;
-    }
-    if (g_uart_buff_len == 0) {
-        return NULL;
-    }
-    *len = g_uart_buff_len;
-    g_buff_data_valid = 0;
-    return g_buff;
-}
-
-void sle_uart_low_latency_tx_cbk_register(void)
-{
-    sle_low_latency_tx_callbacks_t cbk_func = {0};
-    cbk_func.low_latency_tx_cb = sle_uart_low_latency_tx_cbk;
-    sle_low_latency_tx_register_callbacks(&cbk_func);
-}
-#endif
 
 static void sle_uart_server_create_msgqueue(void)
 {
@@ -197,9 +151,6 @@ static void *sle_uart_server_task(const char *arg)
     sle_uart_server_init(ssaps_server_read_request_cbk, ssaps_server_write_request_cbk);
 
 
-#ifdef CONFIG_SAMPLE_SUPPORT_LOW_LATENCY_TYPE
-    sle_uart_low_latency_tx_cbk_register();
-#endif
     /* UART pinmux. */
     uart_init_pin();
 

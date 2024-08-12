@@ -49,8 +49,6 @@ typedef void (*sle_uart_server_msg_queue)(uint8_t *buffer_addr, uint16_t buffer_
 void sle_uart_server_register_msg(sle_uart_server_msg_queue sle_uart_server_msg);
 
 
-void sle_uart_server_sample_set_mcs(uint16_t conn_id);
-
 uint16_t get_connect_id(void);
 
 #ifdef __cplusplus
