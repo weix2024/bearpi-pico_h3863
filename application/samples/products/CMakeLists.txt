@@ -8,6 +8,10 @@ if(DEFINED CONFIG_SAMPLE_SUPPORT_SLE_UART)
     add_subdirectory_if_exist(sle_uart)
 endif()
 
+if(DEFINED CONFIG_SAMPLE_SUPPORT_SLE_UART_1_VS_8)
+    add_subdirectory_if_exist(sle_uart_1_vs_8)
+endif()
+
 if(DEFINED CONFIG_SAMPLE_SUPPORT_BLE_UART)
     add_subdirectory_if_exist(ble_uart)
 endif()

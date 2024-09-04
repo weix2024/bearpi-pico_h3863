@@ -205,10 +205,15 @@ void sle_uart_indication_cb(uint8_t client_id, uint16_t conn_id, ssapc_handle_va
 static void sle_uart_client_read_int_handler(const void *buffer, uint16_t length, bool error)
 {
     unused(error);
+
+    uint8_t *buff = (uint8_t *)buffer;
+    char num_str[2] = {buff[0], '\0'};                                  //把第一个字符当作conn_id
     ssapc_write_param_t *sle_uart_send_param = get_g_sle_uart_send_param();
-    uint16_t g_sle_uart_conn_id = get_g_sle_uart_conn_id();
-    sle_uart_send_param->data_len = length;
-    sle_uart_send_param->data = (uint8_t *)buffer;
+    uint16_t g_sle_uart_conn_id = atoi(num_str);                            
+
+    osal_printk("\n sle_uart_client_read_int_handler: %d\r\n", g_sle_uart_conn_id);
+    sle_uart_send_param->data_len = length - 1;
+    sle_uart_send_param->data = (uint8_t *)buffer+1;                    // 调整数据指针，指向 buffer 的第二个字节
     ssapc_write_req(0, g_sle_uart_conn_id, sle_uart_send_param);
 }
 
