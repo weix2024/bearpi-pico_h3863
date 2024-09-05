@@ -13,18 +13,18 @@
 #include "uart.h"
 // #include "pm_clock.h"
 #include "sle_low_latency.h"
-#if defined(CONFIG_SAMPLE_SUPPORT_SLE_UART_SERVER)
+#if defined(CONFIG_SAMPLE_SUPPORT_SLE_UART_SERVER_1_VS_8)
 #include "securec.h"
 #include "sle_uart_server.h"
 #include "sle_uart_server_adv.h"
 #include "sle_device_discovery.h"
 #include "sle_errcode.h"
-#elif defined(CONFIG_SAMPLE_SUPPORT_SLE_UART_CLIENT)
+#elif defined(CONFIG_SAMPLE_SUPPORT_SLE_UART_CLIENT_1_VS_8)
 #define SLE_UART_TASK_STACK_SIZE            0x600
 #include "sle_connection_manager.h"
 #include "sle_ssap_client.h"
 #include "sle_uart_client.h"
-#endif  /* CONFIG_SAMPLE_SUPPORT_SLE_UART_CLIENT */
+#endif  /* CONFIG_SAMPLE_SUPPORT_SLE_UART_CLIENT_1_VS_8 */
 
 #define SLE_UART_TASK_PRIO                  28
 #define SLE_UART_TASK_DURATION_MS           2000
@@ -69,7 +69,7 @@ static void uart_init_config(void)
 
 }
 
-#if defined(CONFIG_SAMPLE_SUPPORT_SLE_UART_SERVER)
+#if defined(CONFIG_SAMPLE_SUPPORT_SLE_UART_SERVER_1_VS_8)
 #define SLE_UART_SERVER_DELAY_COUNT         5
 
 #define SLE_UART_TASK_STACK_SIZE            0x1200
@@ -180,7 +180,7 @@ static void *sle_uart_server_task(const char *arg)
     sle_uart_server_delete_msgqueue();
     return NULL;
 }
-#elif defined(CONFIG_SAMPLE_SUPPORT_SLE_UART_CLIENT)
+#elif defined(CONFIG_SAMPLE_SUPPORT_SLE_UART_CLIENT_1_VS_8)
 
 void sle_uart_notification_cb(uint8_t client_id, uint16_t conn_id, ssapc_handle_value_t *data,
     errcode_t status)
@@ -239,19 +239,19 @@ static void *sle_uart_client_task(const char *arg)
 
     return NULL;
 }
-#endif  /* CONFIG_SAMPLE_SUPPORT_SLE_UART_CLIENT */
+#endif  /* CONFIG_SAMPLE_SUPPORT_SLE_UART_CLIENT_1_VS_8 */
 
 static void sle_uart_entry(void)
 {
     osal_task *task_handle = NULL;
     osal_kthread_lock();
-#if defined(CONFIG_SAMPLE_SUPPORT_SLE_UART_SERVER)
+#if defined(CONFIG_SAMPLE_SUPPORT_SLE_UART_SERVER_1_VS_8)
     task_handle = osal_kthread_create((osal_kthread_handler)sle_uart_server_task, 0, "SLEUartServerTask",
                                       SLE_UART_TASK_STACK_SIZE);
-#elif defined(CONFIG_SAMPLE_SUPPORT_SLE_UART_CLIENT)
+#elif defined(CONFIG_SAMPLE_SUPPORT_SLE_UART_CLIENT_1_VS_8)
     task_handle = osal_kthread_create((osal_kthread_handler)sle_uart_client_task, 0, "SLEUartDongleTask",
                                       SLE_UART_TASK_STACK_SIZE);
-#endif /* CONFIG_SAMPLE_SUPPORT_SLE_UART_CLIENT */
+#endif /* CONFIG_SAMPLE_SUPPORT_SLE_UART_CLIENT_1_VS_8 */
     if (task_handle != NULL) {
         osal_kthread_set_priority(task_handle, SLE_UART_TASK_PRIO);
     }
