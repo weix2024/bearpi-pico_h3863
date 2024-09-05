@@ -24,8 +24,9 @@
 #define UART_TASK_STACK_SIZE               0x1000
 #define UART_TASK_DURATION_MS              1000
 #define UART_TASK_PRIO                     (osPriority_t)(17)
-
+#if defined(CONFIG_UART_POLL_TRANSFER_MODE)
 static uint8_t g_app_uart_tx_buff[UART_TRANSFER_SIZE] = "Hello BearPi";
+#endif
 static uint8_t g_app_uart_rx_buff[UART_TRANSFER_SIZE] = { 0 };
 #if defined(CONFIG_UART_INT_TRANSFER_MODE)
 static uint8_t g_app_uart_int_rx_flag = 0;
