@@ -25,19 +25,19 @@ config UART_RXD_PIN
 
 choice
     prompt "Select sle uart type"
-    default SAMPLE_SUPPORT_SLE_UART_SERVER_1_VS_8_1_VS_8
-    config SAMPLE_SUPPORT_SLE_UART_SERVER_1_VS_8_1_VS_8
+    default SAMPLE_SUPPORT_SLE_UART_SERVER_1_VS_8
+    config SAMPLE_SUPPORT_SLE_UART_SERVER_1_VS_8
         bool "Enable SLE UART Server sample."
-    config SAMPLE_SUPPORT_SLE_UART_CLIENT_1_VS_8_1_VS_8
+    config SAMPLE_SUPPORT_SLE_UART_CLIENT_1_VS_8
         bool "Enable SLE UART Client sample."
 endchoice
 
 
 config SUPPORT_SLE_PERIPHERAL
     bool
-    default y if (SAMPLE_SUPPORT_SLE_UART_SERVER_1_VS_8_1_VS_8)
+    default y if (SAMPLE_SUPPORT_SLE_UART_SERVER_1_VS_8)
 
 
 config SUPPORT_SLE_CENTRAL
     bool
-    default y if (SAMPLE_SUPPORT_SLE_UART_CLIENT_1_VS_8_1_VS_8)
+    default y if (SAMPLE_SUPPORT_SLE_UART_CLIENT_1_VS_8)
