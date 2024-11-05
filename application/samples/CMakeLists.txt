@@ -35,7 +35,11 @@ set(PUBLIC_DEFINES
 set(COMPONENT_PUBLIC_CCFLAGS
 )
 
+# 设置不显示不使用警告
 set(COMPONENT_CCFLAGS
+    -Wno-unused-variable
+    -Wno-unused-parameter
+    -Wno-error=unused-function
 )
 
 set(WHOLE_LINK
